@@ -54,7 +54,6 @@ class ObjNode:
             self.visible_conditions = self.parent.visible_conditions.copy()
             self.expand_conditions = self.parent.expand_conditions.copy()
 
-
     @property
     def is_module(self):
         return inspect.ismodule(self.obj)
@@ -158,7 +157,7 @@ class ObjNode:
             type_str = "class"
         else:
             type_str = str(type(self.obj).__name__)
-        if (type_str == 'type'):
+        if type_str == "type":
             assert False
         self.type_str = type_str
 

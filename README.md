@@ -5,11 +5,11 @@ A dual vector foil（[二向箔](https://zh.wikipedia.org/wiki/%E4%B8%89%E4%BD%9
 
 Simply speaking, `dvf` (dual vector foil) is a recursive pretty printer for any objects in Python. It allows you to inspect Python object in a simple and comprehensive way. Checkout the following example:
 
-![simple2](https://user-images.githubusercontent.com/22628546/47994834-799ede00-e12e-11e8-9997-44fdd5b65443.gif))
+![simple2](https://user-images.githubusercontent.com/22628546/48036479-9295a680-e1a3-11e8-9847-449d3e5310ae.gif)
 
 ## Example on Flask app
 
-`Flask` app is very complex python object, and `dvf` can use paging (`less`) to wrap the output. 
+`Flask` app is very complex Python object, and `dvf` can use paging (`less`) to wrap the output. If the GIF doesn't show immediately, be patient, it's about 10 MB large (click to zoom in):
 
 ![complex4](https://user-images.githubusercontent.com/22628546/47995242-9851a480-e12f-11e8-9e2d-499756b3fdb4.gif)
 
@@ -17,15 +17,17 @@ If your eyes are sharp enough, you'll find a warning at the end of the gif. That
 
 ## Installation 
 
-The project is still under development and the only way to use `dvf` is to clone this repo then copy it to your `PYTHONPATH`, then install dependency manualy. `setup.py` and `pip` comming soon.
+```
+pip install dvf
+```
 
-The development is under Python 3.7 and the package provides no Python 2 support.
+The project is still under development, so any report on bugs is highly appreciated. The development is under Python 3.7 and the package provides **no Python 2 support**.
 
 ## Philosophy
 
 #### Why not `dir` or `__dict__`
 
-There is already a great inspection package [`pdir`](https://github.com/laike9m/pdir2), which emphasize on the **usage** of modules and objects, while `dvf` is aiming at data and internal structure of objects. 
+There is already a great inspection package [`pdir`](https://github.com/laike9m/pdir2), which emphasize on the **usage** of modules and objects, while `dvf` is aiming at **data and internal structure** of objects. 
 As a result, `dvf` will by default ommit any object attributes that have type of function, module or class, and will try its best to expand any iterable to see what really lies in .
 
 #### Safety concern
@@ -44,3 +46,9 @@ To solve this economically, `dvf` records every object it has visited and ommit 
 
 Another troublesome case is object creation during attribute access. A typical example is `NumPy` array, which has an attribute of `T` that returns the transpose of the array, 
 which has another `T` that returns another new array. So there is also an infinite loop. To solve this `dvf` should be very cautious toward data descriptors. Some result gained from descriptors will not be expanded.
+
+## Todo list
+- [ ] User-custom searching and filtering
+- [ ] Docs on output format
+- [ ] Tests
+- [ ] Use `prompt_toolkit` to build an application that can handle wide output (horizontally scollable)
