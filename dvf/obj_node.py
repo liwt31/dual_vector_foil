@@ -134,7 +134,7 @@ class ObjNode:
         return all(type(n) == str for n in f)
 
     def init_obj(self):
-        # in this case no need to discuss descriptor
+        # from iterables, no need to discuss descriptor
         if not self.from_dir:
             self.obj = self._obj
         if is_descriptor(self._obj):
@@ -142,7 +142,11 @@ class ObjNode:
                 self.obj = self._obj.__get__(self.parent.obj)
             except Exception as e:
                 # some descriptors may not be implemented properly
-                warnings.warn("An error occured while trying to process a descriptor.")
+                warnings.warn(
+                    "An error occured while trying to process a descriptor. Msg: {}".format(
+                        e
+                    )
+                )
                 self.obj = UnknownDesc
                 self.expand_conditions += ConditionManager.always_false()
             else:

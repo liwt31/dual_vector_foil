@@ -16,6 +16,7 @@ class ConditionManager:
     @classmethod
     def limit_children(cls, parent):
         def pred(obj_node):
+            # to skip the limit for current node
             if obj_node is parent:
                 return
             if obj_node.is_descriptor and not obj_node.is_builtin_type:
@@ -71,6 +72,9 @@ class ConditionManager:
             else:
                 return res
         assert False
+
+    def __call__(self, node_obj):
+        return self.judge(node_obj)
 
     def __iadd__(self, other):
         self._conditions.extend(other.conditions)

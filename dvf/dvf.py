@@ -3,7 +3,6 @@ from collections import deque
 from print_tree import print_tree
 
 from .obj_node import ObjNode
-from .conditions import ConditionManager
 from .format import default_formatter
 
 
@@ -16,6 +15,7 @@ class print_dvf(print_tree):
 
 
 def dvf(obj, paging=True):
+    ObjNode.expanded_obj_id_set.clear()
     dummy = ObjNode(None, "_dummy", object)
     root = ObjNode(dummy, "root", obj, True)
     nexts = deque([root])

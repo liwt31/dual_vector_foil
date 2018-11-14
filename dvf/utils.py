@@ -1,16 +1,16 @@
 import inspect
-import functools
 
 
 def is_descriptor(obj):
     for name in ["__get__", "__set__", "__delete__"]:
         # some objs (such as local proxy in flask) tweaks __getattr__
-        # and `hasattr` may raise any errors
+        # and `hasattr` may raise any exceptions
         try:
             if hasattr(obj, name):
                 return True
         except Exception:
             return False
+    return False
 
 
 def safe_getattr(attr_obj, attr_name):
