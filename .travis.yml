@@ -7,7 +7,8 @@ python:
 install: 
     - pip install colorama
     - pip install termcolor
-    - pip install print_tree
+    - pip install print_tree2
+    - pip install flask
 
 script:
     - python -m pytest

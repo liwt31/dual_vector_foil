@@ -1,4 +1,7 @@
 # dual_vector_foil
+[![Build Status](https://travis-ci.org/liwt31/dual_vector_foil.svg?branch=master)](https://travis-ci.org/liwt31/dual_vector_foil)
+[![PyPI version](https://badge.fury.io/py/dvf.svg)](https://badge.fury.io/py/dvf)
+
 A dual vector foil（[二向箔](https://zh.wikipedia.org/wiki/%E4%B8%89%E4%BD%93%E7%94%A8%E8%AF%AD%E5%88%97%E8%A1%A8#%E4%BA%8C%E5%90%91%E7%AE%94)） that squashes any Python objects into your console
 
 ## Introduction
@@ -13,7 +16,7 @@ Simply speaking, `dvf` (dual vector foil) is a recursive pretty printer for any 
 
 ![complex4](https://user-images.githubusercontent.com/22628546/47995242-9851a480-e12f-11e8-9e2d-499756b3fdb4.gif)
 
-If your eyes are sharp enough, you'll find a warning at the end of the gif. That's because `dvf` tries to access some attribute of `Flask` that are only valid in a request context. The warning is quite common for complex objects.
+If your eyes are sharp enough, you'll find a warning at the end of the gif. That's because `dvf` tries to access some attributes of `Flask` that are only valid in a request context. The warning is quite common for complex objects.
 
 ## Installation 
 
@@ -21,17 +24,18 @@ If your eyes are sharp enough, you'll find a warning at the end of the gif. That
 pip install dvf
 ```
 
-The project is still under development, so any report on bugs is highly appreciated. The development is under Python 3.7 and the package provides **no Python 2 support**.
+The project is still under development, so any report on bugs is highly appreciated. 
+The development is under Python 3.7 and Python 3.6 is also tested. The package provides **no Python <= 3.5 support**.
 
 ## Philosophy
 
 #### Why not `dir` or `__dict__`
 
-There is already a great inspection package [`pdir`](https://github.com/laike9m/pdir2), which emphasize on the **usage** of modules and objects, while `dvf` is aiming at **data and internal structure** of objects. 
-As a result, `dvf` will by default ommit any object attributes that have type of function, module or class, and will try its best to expand any iterable to see what really lies in .
+There is already an amazing inspection package [`pdir`](https://github.com/laike9m/pdir2), which emphasize on the **usage** of modules and objects, while `dvf` is aiming at **data and internal structure** of objects. 
+As a result, `dvf` will by default omit any object attributes that have type of function, module or class, and will try its best to expand any iterable to see what really lies in .
 
 #### Safety concern
-Do not use `dvf` on untrusted object because `dvf` will have to evoke some methods of the object to evaluate attributes. Is this a foundamental flaw of `dvf`? I think not.
+As you might have gaused, it's not wise to use `dvf` on untrusted object because `dvf` will have to evoke some methods of the object to evaluate attributes. Is this a foundamental flaw of `dvf`? I think not.
 Because if an object is really malicious, it can delete your system when it's imported, why wait untill `dvf` to check it?
 
 #### Deal with loops
@@ -42,7 +46,7 @@ class Foo:
     def __init__(self):
         self.another_me = self
 ```
-To solve this economically, `dvf` records every object it has visited and ommit them next time it meet the object. That's why sometimes a complete view of certain objects is not possible.
+To solve this economically, `dvf` records every object it has visited and omit them next time it meet the object. That's why sometimes a complete view of certain objects is not possible.
 
 Another troublesome case is object creation during attribute access. A typical example is `NumPy` array, which has an attribute of `T` that returns the transpose of the array, 
 which has another `T` that returns another new array. So there is also an infinite loop. To solve this `dvf` should be very cautious toward data descriptors. Some result gained from descriptors will not be expanded.
@@ -50,5 +54,5 @@ which has another `T` that returns another new array. So there is also an infini
 ## Todo list
 - [ ] User-custom searching and filtering
 - [ ] Docs on output format
-- [ ] Tests
+- [x] Tests
 - [ ] Use `prompt_toolkit` to build an application that can handle wide output (horizontally scollable)
