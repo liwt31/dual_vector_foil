@@ -13,7 +13,9 @@ builtin_type_tuple = leaf_type_tuple + (
 
 
 class Ellipsis_:
-    pass
+    type_str = ""
+    name = "···"
+    value_str = ""
 
 
 class Descriptor:

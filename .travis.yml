@@ -1,0 +1,14 @@
+language: python
+
+python:
+    - "3.6"
+    - "3.7-dev"
+
+install: 
+    - pip install colorama
+    - pip install termcolor
+    - pip install print_tree
+
+script:
+    - python -m pytest
+

@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import os
-import re
 from setuptools import setup, find_packages
 
 
@@ -11,7 +10,7 @@ setup(
     name="dvf",
     author="liwt31",
     author_email="liwt31@163.com",
-    version="0.1.1",
+    version="0.1.2",
     license="MIT",
     url="https://github.com/liwt31/dual_vector_foil",
     description="A dual vector foil (二向箔) that squashes any Python objects into your console.",
@@ -24,7 +23,6 @@ setup(
         "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python",

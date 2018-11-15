@@ -4,6 +4,16 @@ MEDIUM_PRIORITY = 10
 DEFAULT_PRIORITY = 0
 
 
+def is_neglected_type(obj_node):
+    return (
+        obj_node.is_magic
+        or obj_node.is_routine
+        or obj_node.is_class
+        or obj_node.is_module
+        or obj_node.is_generator
+    )
+
+
 class ConditionManager:
     @classmethod
     def always_true(cls):
@@ -16,9 +26,11 @@ class ConditionManager:
     @classmethod
     def limit_children(cls, parent):
         def pred(obj_node):
-            # to skip the limit for current node
+            # to skip the limitation for current node
             if obj_node is parent:
                 return
+            # the node is a descriptor and return type is not simple
+            # infinite object generation is possible
             if obj_node.is_descriptor and not obj_node.is_builtin_type:
                 return False
             # else return None and allow further judgement
@@ -32,29 +44,24 @@ class ConditionManager:
             if not obj_node.from_dir:
                 return True
             else:
-                return (
-                    not obj_node.is_magic
-                    and not obj_node.is_routine
-                    and not obj_node.is_class
-                    and not obj_node.is_module
-                    and not obj_node.is_generator
-                )
+                return not is_neglected_type(obj_node)
 
         condition = Condition(pred, DEFAULT_PRIORITY, "default visible")
         return cls([condition])
 
     @classmethod
     def default_expand(cls):
-        def check(obj_node):
+        def pred(obj_node):
             if (
-                obj_node.is_leaf_type
+                is_neglected_type(obj_node)
+                or obj_node.is_leaf_type
                 or id(obj_node.obj) in obj_node.expanded_obj_id_set
             ):
                 return False
             else:
                 return True
 
-        return cls([Condition(check, DEFAULT_PRIORITY, "default expand")])
+        return cls([Condition(pred, DEFAULT_PRIORITY, "default expand")])
 
     def __init__(self, conditions=None):
         self._conditions = conditions or []

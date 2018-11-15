@@ -3,6 +3,7 @@ from functools import partial
 from colorama import init
 from termcolor import colored
 
+
 init()
 
 
@@ -29,7 +30,7 @@ def default_formatter(node):
     if node.length is not None:
         ctype += "({})".format(colored(str(node.length), "magenta"))
     if ctype:
-        ctype = "<{}>".format(ctype)
+        ctype = f"<{ctype}>"
 
     cname_func = partial(colored, color="cyan")
     cname = abbr_and_color(node.name, cname_func)
@@ -40,4 +41,4 @@ def default_formatter(node):
 
     else:
         cvalue = ""
-    return "{}{}{}".format(ctype, cname, cvalue)
+    return f"{ctype}{cname}{cvalue}"

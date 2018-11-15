@@ -1,18 +1,24 @@
-from dvf.conditions import ConditionManager
+import dvf  # for pure test as a module
+from dvf.conditions import ConditionManager, is_neglected_type
 from dvf.obj_node import ObjNode
 
 
+def test_neglected_type():
+    for obj in [ObjNode, ObjNode.__eq__, dvf]:
+        assert is_neglected_type(ObjNode(None, "1", obj))
+
+
 def test_base_condition():
-    node1 = ObjNode(None, 'node1', 'node1')
-    node2 = ObjNode(None, 'node2', list([1, 23]))
+    node1 = ObjNode(None, "node1", "node1")
+    node2 = ObjNode(None, "node2", list([1, 23]))
     always_true = ConditionManager.always_true()
     assert always_true(node1)
     always_false = ConditionManager.always_false()
     assert not always_false(node1)
 
-    class_node = ObjNode(node1, 'class', ObjNode, True)
-    import dvf
-    module_node = ObjNode(node1, 'module', dvf, True)
+    class_node = ObjNode(node1, "class", ObjNode, True)
+
+    module_node = ObjNode(node1, "module", dvf, True)
     default_visible = ConditionManager.default_visible()
     assert not default_visible(class_node)
     assert not default_visible(module_node)
@@ -25,8 +31,8 @@ def test_base_condition():
 
 
 def test_multiple_condition():
-    node1 = ObjNode(None, 'node1', list([1, 2]))
-    node2 = ObjNode(node1, 'node2', property(lambda x: 42), True)
+    node1 = ObjNode(None, "node1", list([1, 2]))
+    node2 = ObjNode(node1, "node2", property(lambda x: node1), True)
     conditions = ConditionManager.default_expand()
     conditions += ConditionManager.limit_children(node1)
     assert conditions(node1)

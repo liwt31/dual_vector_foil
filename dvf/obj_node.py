@@ -120,7 +120,9 @@ class ObjNode:
 
     @property
     def is_ordered(self):
-        return self.is_sequence or isinstance(self.obj, collections.OrderedDict)
+        # from python3.6 built-in dict is ordered
+        # dvf doesn't support python<3.6
+        return self.is_sequence or isinstance(self.obj, (collections.OrderedDict, dict))
 
     # from https://stackoverflow.com/questions/2166818/python-how-to-check-if-an-object-is-an-instance-of-a-namedtuple
     @property
@@ -137,15 +139,14 @@ class ObjNode:
         # from iterables, no need to discuss descriptor
         if not self.from_dir:
             self.obj = self._obj
-        if is_descriptor(self._obj):
+        # if we can try to evaluate a descriptor
+        if self.parent is not None and is_descriptor(self._obj):
             try:
                 self.obj = self._obj.__get__(self.parent.obj)
             except Exception as e:
                 # some descriptors may not be implemented properly
                 warnings.warn(
-                    "An error occured while trying to process a descriptor. Msg: {}".format(
-                        e
-                    )
+                    f"An error occured while trying to process descriptor {self.name} of {self.parent.name}. Msg: {e}"
                 )
                 self.obj = UnknownDesc
                 self.expand_conditions += ConditionManager.always_false()
@@ -156,7 +157,7 @@ class ObjNode:
 
     def init_type(self):
         if self.obj is Ellipsis_:
-            type_str = ""
+            type_str = Ellipsis_.type_str
         elif inspect.isclass(self.obj):
             type_str = "class"
         else:
@@ -167,7 +168,7 @@ class ObjNode:
 
     def init_len(self):
         if isinstance(self.obj, collections.abc.Sized):
-            # any error can raise from user-defined `__len__`
+            # any exception can be raised from user-defined `__len__`
             try:
                 self.length = len(self.obj)
             except Exception:
@@ -177,7 +178,7 @@ class ObjNode:
         if self.is_leaf_type:
             value = repr(self.obj)
         elif self.obj is Ellipsis_:
-            value = ""
+            value = Ellipsis_.value_str
         elif inspect.isclass(self.obj):
             value = self.obj.__name__
         elif inspect.isroutine(
@@ -221,9 +222,10 @@ class ObjNode:
             visible_children.sort(key=lambda node: node.type_str)
         if not visible_children:
             return []
+        # compress list or dict which could be very long
         if not visible_children[0].from_dir:
             if 6 < len(visible_children):
                 visible_children = visible_children[:2] + visible_children[-2:]
-                visible_children.insert(2, ObjNode(self, "···", Ellipsis_))
+                visible_children.insert(2, ObjNode(self, Ellipsis_.name, Ellipsis_))
 
         return visible_children
